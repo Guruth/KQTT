@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import sh.weller.kqtt.api.KQTTCallbackClient
 import sh.weller.kqtt.api.KQTTMessage

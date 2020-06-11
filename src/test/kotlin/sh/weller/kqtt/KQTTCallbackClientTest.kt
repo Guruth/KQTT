@@ -1,9 +1,11 @@
 package sh.weller.kqtt
 
 import kotlinx.coroutines.*
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import sh.weller.kqtt.api.ConnectionParameters
-import sh.weller.kqtt.api.KQTTCallbackClient
 import sh.weller.kqtt.api.KQTTClient
 import sh.weller.kqtt.api.KQTTMessage
 import java.nio.charset.Charset

@@ -1,13 +1,16 @@
 package sh.weller.kqtt
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import sh.weller.kqtt.api.*
-import sh.weller.kqtt.impl.KQTTFlowClientImpl
+import sh.weller.kqtt.api.ConnectionParameters
+import sh.weller.kqtt.api.KQTTClient
+import sh.weller.kqtt.api.KQTTMessage
+import sh.weller.kqtt.impl.concurrentOnEach
 import java.nio.charset.Charset
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -31,7 +34,7 @@ class KQTTFlowClientTest {
             mqttBroker.stop()
         }
     }
-    
+
     private val client = KQTTClient.builder().buildFlowClient()
 
     @Test
@@ -46,7 +49,7 @@ class KQTTFlowClientTest {
             val subscriptionJob = launch {
                 client
                     .subscribe("test")
-                    .concurrentMap(CoroutineScope(Dispatchers.IO), 10) {
+                    .concurrentOnEach(CoroutineScope(Dispatchers.IO), 10) {
                         delay(workloadDuration)
                         awaitResult.countDown()
                     }
@@ -71,15 +74,4 @@ class KQTTFlowClientTest {
             Assertions.assertTrue(receivedResult)
         }
     }
-
-    private fun <T, R> Flow<T>.concurrentMap(
-        scope: CoroutineScope,
-        concurrencyLevel: Int,
-        transform: suspend (T) -> R
-    ): Flow<R> =
-        this
-            .map { scope.async { transform(it) } }
-            .buffer(concurrencyLevel)
-            .map { it.await() }
-
 }
