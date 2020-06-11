@@ -1,5 +1,6 @@
 package sh.weller.kqtt.api
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import sh.weller.kqtt.impl.KQTTCallbackClientImpl
 import sh.weller.kqtt.impl.KQTTFlowClientImpl
 
@@ -20,6 +21,13 @@ interface KQTTClient {
     suspend fun connect(connectionParameters: ConnectionParameters)
 
     /**
+     * Returns the current connection status.
+     *
+     * @return Flag if the client is currently connected.
+     */
+    fun isConnected(): Boolean
+
+    /**
      * Closes the connection.
      */
     suspend fun disconnect()
@@ -33,6 +41,7 @@ interface KQTTClient {
     suspend fun publish(message: KQTTMessage)
 
     class Builder {
+        @ExperimentalCoroutinesApi
         fun buildFlowClient(): KQTTFlowClient = KQTTFlowClientImpl()
 
         fun buildCallbackClient(): KQTTCallbackClient = KQTTCallbackClientImpl()

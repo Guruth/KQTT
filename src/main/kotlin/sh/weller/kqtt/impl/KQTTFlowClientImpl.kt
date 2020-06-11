@@ -7,20 +7,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.runBlocking
+import org.slf4j.LoggerFactory
 import sh.weller.kqtt.api.KQTTFlowClient
 import sh.weller.kqtt.api.KQTTMessage
 
+@ExperimentalCoroutinesApi
 class KQTTFlowClientImpl : KQTTClientImpl(), KQTTFlowClient {
 
 
-    @ExperimentalCoroutinesApi
     override suspend fun subscribe(topic: String): Flow<KQTTMessage> = subscribe(listOf(topic))
 
-    @ExperimentalCoroutinesApi
     override suspend fun subscribe(topics: Collection<String>): Flow<KQTTMessage> = callbackFlow {
         client.subscribeWith()
             .addSubscriptions(topics.toSubscriptions())
             .callback {
+                logger.debug("Received message on topic {}", it.topic)
                 sendBlocking(it.toKQTTMessage())
             }
             .send()
@@ -32,7 +33,12 @@ class KQTTFlowClientImpl : KQTTClientImpl(), KQTTFlowClient {
                     .addTopicFilters(topics.toTopicFilter())
                     .send()
                     .await()
+                logger.info("Unsubscribed from topics {}", topics)
             }
         }
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(KQTTFlowClientImpl::class.java)
     }
 }

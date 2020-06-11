@@ -1,12 +1,11 @@
 package sh.weller.kqtt
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
 import org.junit.jupiter.api.*
 import sh.weller.kqtt.api.ConnectionParameters
+import sh.weller.kqtt.api.KQTTCallbackClient
 import sh.weller.kqtt.api.KQTTClient
 import sh.weller.kqtt.api.KQTTMessage
-import sh.weller.kqtt.impl.KQTTCallbackClientImpl
 import java.nio.charset.Charset
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -14,24 +13,41 @@ import kotlin.system.measureTimeMillis
 
 class KQTTCallbackClientTest {
 
-    val numTestMessages = 10
-    val workloadDuration = 500L
-    val isLog = false
+    companion object {
+
+        private val mqttBroker: KGenericContainer = mqttBroker()
+
+        @BeforeAll
+        @JvmStatic
+        fun setup() {
+            mqttBroker.start()
+        }
+
+        @AfterAll
+        @JvmStatic
+        fun tearDown() {
+            mqttBroker.stop()
+        }
+    }
+
+    private val client = KQTTClient.builder().buildCallbackClient()
+
 
     @Test
     fun `Test with Callback`() {
+        val numTestMessages = 10
+        val workloadDuration = 500L
+
         val awaitResult = CountDownLatch(numTestMessages)
 
         runBlocking {
-            val client = KQTTClient.builder().buildCallbackClient()
-            client.connect(ConnectionParameters("localhost", 1883))
+            client.connect(ConnectionParameters("localhost", mqttBroker.getMQTTPort()))
 
             var receivedResult = false
             val duration = measureTimeMillis {
                 client.subscribe("test") {
                     CoroutineScope(Dispatchers.IO).launch {
                         delay(workloadDuration)
-                        log(it.payload?.toString(Charset.defaultCharset()))
                         awaitResult.countDown()
                     }
                 }
@@ -49,9 +65,5 @@ class KQTTCallbackClientTest {
         }
     }
 
-    private fun log(msg: String?) {
-        if (isLog) {
-            println("[${Thread.currentThread().name}] $msg")
-        }
-    }
+
 }
