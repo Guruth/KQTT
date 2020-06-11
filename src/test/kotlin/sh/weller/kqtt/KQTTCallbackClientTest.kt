@@ -4,6 +4,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.junit.jupiter.api.*
 import sh.weller.kqtt.api.ConnectionParameters
+import sh.weller.kqtt.api.KQTTClient
 import sh.weller.kqtt.api.KQTTMessage
 import sh.weller.kqtt.impl.KQTTCallbackClientImpl
 import java.nio.charset.Charset
@@ -11,7 +12,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
-class KQTTClientTest {
+class KQTTCallbackClientTest {
 
     val numTestMessages = 10
     val workloadDuration = 500L
@@ -22,7 +23,7 @@ class KQTTClientTest {
         val awaitResult = CountDownLatch(numTestMessages)
 
         runBlocking {
-            val client = KQTTCallbackClientImpl()
+            val client = KQTTClient.builder().buildCallbackClient()
             client.connect(ConnectionParameters("localhost", 1883))
 
             var receivedResult = false

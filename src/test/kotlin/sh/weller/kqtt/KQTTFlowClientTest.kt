@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import sh.weller.kqtt.api.ConnectionParameters
+import sh.weller.kqtt.api.KQTTClient
 import sh.weller.kqtt.api.KQTTMessage
 import sh.weller.kqtt.impl.KQTTFlowClientImpl
 import java.nio.charset.Charset
@@ -22,7 +23,7 @@ class KQTTFlowClientTest {
         val awaitResult = CountDownLatch(numTestMessages)
 
         runBlocking {
-            val client = KQTTFlowClientImpl()
+            val client = KQTTClient.builder().buildFlowClient()
             client.connect(ConnectionParameters("localhost", 1883))
             val subscriptionJob = launch {
                 client
