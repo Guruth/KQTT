@@ -118,7 +118,7 @@ coroutines:
   GlobalCoroutineUsage:
     active: false
   RedundantSuspendModifier:
-    active: false
+    active: true
 
 empty-blocks:
   active: true
@@ -468,7 +468,7 @@ potential-bugs:
     active: true
 
 style:
-  active: true
+  active: false
   CollapsibleIfStatements:
     active: false
   DataClassContainsFunctions:
