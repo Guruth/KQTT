@@ -1,6 +1,9 @@
 plugins {
-    kotlin("jvm") version "1.3.72"
     idea
+    kotlin("jvm") version "1.3.72"
+
+    id("org.jetbrains.dokka") version "0.10.1"
+    id("io.gitlab.arturbosch.detekt").version("1.9.1")
 }
 
 idea {
@@ -15,6 +18,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -32,10 +36,25 @@ tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
-    compileTestKotlin{
+    compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
-    test{
+    test {
         useJUnitPlatform()
+    }
+
+    dokka {
+        outputFormat = "html"
+        outputDirectory = "$buildDir/dokka"
+    }
+
+
+}
+
+detekt {
+    reports {
+        html {
+            enabled = true
+        }
     }
 }
