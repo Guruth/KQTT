@@ -1,29 +1,52 @@
 package sh.weller.kqtt.api
 
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.flow.Flow
-
+/**
+ * Wrapper around the HiveMQTT3Client offering suspending functions.
+ *
+ * @see KQTTFlowClient
+ * @see KQTTCallbackClient
+ */
 interface KQTTClient {
+
+    /**
+     * Opens the connection.
+     *
+     * @param connectionParameters The connection parameters.
+     * @see ConnectionParameters
+     */
     suspend fun connect(connectionParameters: ConnectionParameters)
+
+    /**
+     * Closes the connection.
+     */
     suspend fun disconnect()
 
-    suspend fun subscribe(topics: Collection<String>): Flow<KQTTMessage>
-    suspend fun subscribe(topic: String): Flow<KQTTMessage>
-    suspend fun subscribe(topics: Collection<String>, callback: (KQTTMessage) -> Unit)
-    suspend fun subscribe(topic: String, callback: (KQTTMessage) -> Unit)
-
-    suspend fun unsubscribe(topic: String)
-    suspend fun unsubscribe(topics: Collection<String>)
-
+    /**
+     * Publishes the given message.
+     *
+     * @param message the message to be published
+     * @see KQTTMessage
+     */
     suspend fun publish(message: KQTTMessage)
 }
 
+/**
+ * Connection Parameters
+ *
+ * @param host the host name of the mqtt server
+ * @param port the port of the mqtt server
+ */
 data class ConnectionParameters(
     val host: String,
     val port: Int
 )
 
+/**
+ * The payload and topic of received and sent messages.
+ *
+ * @param topic the topic of on which messages are sent or received
+ * @param payload the payload of the message
+ */
 data class KQTTMessage(
     val topic: String,
     val payload: ByteArray?
