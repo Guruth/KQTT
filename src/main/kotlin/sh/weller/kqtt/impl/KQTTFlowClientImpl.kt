@@ -35,6 +35,4 @@ class KQTTFlowClientImpl : KQTTClientImpl(), KQTTFlowClient {
             }
         }
     }
-
-
 }

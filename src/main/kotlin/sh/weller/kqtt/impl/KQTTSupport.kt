@@ -11,5 +11,4 @@ internal fun Collection<String>.toSubscriptions() =
 internal fun Collection<String>.toTopicFilter() =
     map { MqttTopicFilter.of(it) }
 
-
 internal fun Mqtt3Publish.toKQTTMessage() = KQTTMessage(topic.toString(), payloadAsBytes)

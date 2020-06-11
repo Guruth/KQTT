@@ -33,8 +33,8 @@ interface KQTTClient {
 /**
  * Connection Parameters
  *
- * @param host the host name of the mqtt server
- * @param port the port of the mqtt server
+ * @property host the host name of the mqtt server
+ * @property port the port of the mqtt server
  */
 data class ConnectionParameters(
     val host: String,
@@ -44,8 +44,8 @@ data class ConnectionParameters(
 /**
  * The payload and topic of received and sent messages.
  *
- * @param topic the topic of on which messages are sent or received
- * @param payload the payload of the message
+ * @property topic the topic of on which messages are sent or received
+ * @property payload the payload of the message
  */
 data class KQTTMessage(
     val topic: String,

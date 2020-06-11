@@ -43,5 +43,4 @@ interface KQTTCallbackClient : KQTTClient {
      * @param topics the collection of topics to unsubscribe from.
      */
     suspend fun unsubscribe(topics: Collection<String>)
-
 }
